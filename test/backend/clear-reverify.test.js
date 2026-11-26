@@ -101,7 +101,7 @@ test('B7 re-verification task: created, linked to the test, labelled, audited; s
   const link = w.jira.calls('POST', /issueLink$/).at(-1).body;
   assert.deepEqual([link.outwardIssue.key, link.inwardIssue.key], [r.data.taskKey, test15]);
   const text = JSON.stringify(task.fields.description);
-  assert.match(text, /changed after .* last passed on 2026-12-01/);
+  assert.match(text, /changed after .* last passed on 2026-12-01 \d\d:\d\d UTC/);
   assert.match(text, /Before: A single bolus dose shall not exceed 25 units/);
   assert.match(text, /After: A single bolus dose shall not exceed 20 units/);
   assert.match(text, /Re-run the test and move it to a Done status/);

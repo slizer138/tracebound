@@ -19,7 +19,9 @@ export function reverifySummary(downKey, upKey) {
 
 /** Paragraphs for the task description. */
 export function reverifyParagraphs({ kind, downKey, upKey, since, fields, note }) {
-  const when = since === null || since === undefined ? 'its last verification' : isoDate(since).slice(0, 10);
+  // The backend does not know the reader's time zone, so state the time in UTC explicitly; a bare
+  // date could be a day off from the local time shown in the drawer.
+  const when = since === null || since === undefined ? 'its last verification' : `${isoDate(since).slice(0, 16).replace('T', ' ')} UTC`;
   const out = [kind === 'upstream'
     ? `Tracebound found that ${upKey} changed after ${downKey} was last updated on ${when}.`
     : `Tracebound found that ${upKey} changed after ${downKey} last passed on ${when}.`];
