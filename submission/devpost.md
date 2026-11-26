@@ -6,8 +6,11 @@ Bonus prize: **Best app with Atlassian MCP** (fallback if the MCP part cannot be
 
 Tracebound app id (UUID, used in the MCP endpoint): `73791daf-0148-415e-9e39-e59d268e171e`, already filled in below, in
 `docs/judge-guide.md` section 7, `docs/mcp.md` and `skills/tracebound/SKILL.md`.
-Still to fill in before submitting: the install (share) link, the YouTube video link and the public
-repository link.
+Links for the Devpost form:
+- Video (public YouTube, 2:57): https://youtu.be/s9O59D-licI
+- Code repository (public): https://github.com/slizer138/tracebound
+- Install link (Forge share link, production): the URL in `submission/install-link.txt`. It was generated once, so never regenerate it.
+- Privacy policy: https://github.com/slizer138/tracebound/blob/main/PRIVACY.md
 
 ---
 

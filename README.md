@@ -3,6 +3,8 @@
 **Suspect-link traceability for Jira.** Change one requirement, and Jira shows you which tests no
 longer prove it.
 
+Demo video (2:57): https://youtu.be/s9O59D-licI
+
 Tracebound is a Jira Cloud app built on Atlassian Forge. Requirements, risks, risk controls and
 verification tests stay ordinary Jira issues joined by ordinary issue links. When a requirement or risk
 control is substantively edited *after* a linked test last passed, that test no longer proves the
