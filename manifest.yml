@@ -1,0 +1,187 @@
+modules:
+  jira:projectPage:
+    - key: tb-project-page
+      resource: project-page
+      resolver:
+        function: resolver
+      render: native
+      title: Traceability
+  jira:issueContext:
+    - key: tb-issue-context
+      resource: issue-context
+      resolver:
+        function: resolver
+      render: native
+      title: Trace health
+      label: Trace health
+      description: Verification status of this requirement, risk control or test.
+  jira:adminPage:
+    - key: tb-admin
+      resource: admin-page
+      resolver:
+        function: resolver
+      render: native
+      title: Tracebound setup
+    - key: tb-get-started
+      resource: admin-page
+      resolver:
+        function: resolver
+      render: native
+      title: Get started with Tracebound
+      useAsGetStarted: true
+  consumer:
+    - key: tb-jobs-consumer
+      queue: tb-jobs
+      function: job-consumer
+  action:
+    - key: tb-get-readiness
+      name: Get release readiness
+      function: fn-readiness
+      actionVerb: GET
+      description: >-
+        Returns Tracebound release readiness for a Jira project, optionally for
+        one fixVersion. Readiness is the share of requirements and risk controls
+        whose linked tests all passed after their last substantive change.
+      inputs:
+        projectKey:
+          title: Project key
+          type: string
+          required: true
+          description: Jira project key, for example PUMP.
+        release:
+          title: Release
+          type: string
+          required: false
+          description: fixVersion name to filter by. Omit for all items.
+    - key: tb-list-suspects
+      name: List suspect verifications
+      function: fn-suspects
+      actionVerb: GET
+      description: >-
+        Lists verification links that are suspect because the requirement or
+        control changed after the test last passed, and controls whose upstream
+        requirement changed.
+      inputs:
+        projectKey:
+          title: Project key
+          type: string
+          required: true
+          description: Jira project key, for example PUMP.
+    - key: tb-get-trace-gaps
+      name: Get traceability gaps
+      function: fn-gaps
+      actionVerb: GET
+      description: >-
+        Lists uncovered requirements and controls, tests not run, unmitigated
+        risks and orphan tests for a project.
+      inputs:
+        projectKey:
+          title: Project key
+          type: string
+          required: true
+          description: Jira project key, for example PUMP.
+        release:
+          title: Release
+          type: string
+          required: false
+          description: fixVersion name to filter by. Omit for all items.
+    - key: tb-get-change-impact
+      name: Get change impact
+      function: fn-impact
+      actionVerb: GET
+      description: >-
+        For one requirement, control or test issue key, returns what changed
+        since verification (word diff), the affected tests, the derived controls
+        and the mitigated risks.
+      inputs:
+        issueKey:
+          title: Issue key
+          type: string
+          required: true
+          description: For example PUMP-7.
+    - key: tb-create-reverification-task
+      name: Create re-verification task
+      function: fn-reverify
+      actionVerb: CREATE
+      description: >-
+        Creates a Jira task asking for a suspect test to be re-run against the
+        changed requirement or control, links it to the test, and records it in
+        the audit log. Confirm with the user before calling this.
+      inputs:
+        testKey:
+          title: Test issue key
+          type: string
+          required: true
+          description: The suspect test, for example PUMP-27.
+        itemKey:
+          title: Requirement or control key
+          type: string
+          required: true
+          description: The changed requirement or control, for example PUMP-7.
+        note:
+          title: Note
+          type: string
+          required: false
+          description: Optional extra text for the task description.
+  rovo:agent:
+    - key: tb-audit-prep-agent
+      name: Tracebound Audit Prep
+      description: >-
+        Answers what is unverified, suspect or missing in a project's
+        traceability, using Tracebound's deterministic checks.
+      prompt: resource:tb-prompts;audit-prep.txt
+      conversationStarters:
+        - What is not ready for release in this project?
+        - What did the last change to this requirement break in verification?
+        - List suspect verifications and create re-verification tasks for them
+      actions:
+        - tb-get-readiness
+        - tb-list-suspects
+        - tb-get-trace-gaps
+        - tb-get-change-impact
+        - tb-create-reverification-task
+  rovo:mcp:
+    - key: tb-mcp
+      name: Tracebound
+      tools:
+        - tb-get-readiness
+        - tb-list-suspects
+        - tb-get-trace-gaps
+        - tb-get-change-impact
+        - tb-create-reverification-task
+  function:
+    - key: resolver
+      handler: index.handler
+    - key: job-consumer
+      handler: index.jobConsumer
+      timeoutSeconds: 600
+    - key: fn-readiness
+      handler: index.getReadinessAction
+    - key: fn-suspects
+      handler: index.listSuspectsAction
+    - key: fn-gaps
+      handler: index.getTraceGapsAction
+    - key: fn-impact
+      handler: index.getChangeImpactAction
+    - key: fn-reverify
+      handler: index.createReverificationAction
+resources:
+  - key: project-page
+    path: src/frontend/project-page.jsx
+  - key: issue-context
+    path: src/frontend/issue-context.jsx
+  - key: admin-page
+    path: src/frontend/admin-page.jsx
+  - key: tb-prompts
+    path: prompts
+permissions:
+  scopes:
+    - read:jira-work
+    - write:jira-work
+    - storage:app
+app:
+  runtime:
+    name: nodejs24.x
+    memoryMB: 512
+    architecture: arm64
+  id: ari:cloud:ecosystem::app/73791daf-0148-415e-9e39-e59d268e171e

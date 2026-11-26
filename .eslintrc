@@ -1,0 +1,27 @@
+{
+  "root": true,
+  "env": {
+    "es2022": true,
+    "node": true
+  },
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaVersion": 2023,
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "plugins": ["react-hooks"],
+  "extends": ["eslint:recommended"],
+  "rules": {
+    "react-hooks/rules-of-hooks": "error"
+  },
+  "overrides": [
+    {
+      "files": ["*.jsx"],
+      "rules": {
+        "no-unused-vars": ["error", { "varsIgnorePattern": "^[A-Z]" }]
+      }
+    }
+  ]
+}
