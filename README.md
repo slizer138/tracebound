@@ -34,10 +34,15 @@ Be aware of what has and has not been run:
   `react-test-renderer` and clicked through against the real resolvers. These tests show the demo
   numbers: 92% after loading the sample, 75% after the REQ-7 edit with 3 suspect tests and 1
   upstream flag.
-- **Not yet verified on a real Jira site.** No Atlassian login was available while this was built, so
-  the app has not been registered, deployed or installed. How Jira draws the UI Kit components, the
-  exact changelog text Jira records for rich-text descriptions, and Rovo/MCP behaviour are listed as
-  open checks in [docs/judge-guide.md](docs/judge-guide.md#before-submission-checks-on-a-real-site).
+- **Verified on a real Jira Cloud site** (2026-11-25, production deploy, as the site admin): install
+  with exactly the three scopes, sample data load (63 of 63 steps, readiness 92%), the REQ-7 edit
+  (75%, 3 suspect links, 1 upstream flag), the change drawer, a re-verification task, a clearance
+  with a written reason, the audit chain check and a frozen baseline. Checks that need a second
+  user or have not been run yet are listed in
+  [docs/judge-guide.md](docs/judge-guide.md#before-submission-checks-on-a-real-site).
+
+Setup and user guide: [docs/setup.md](docs/setup.md). Support: [SUPPORT.md](SUPPORT.md).
+Terms: [TERMS.md](TERMS.md). Privacy: [PRIVACY.md](PRIVACY.md).
 
 ## Quick start (about 2 minutes)
 
